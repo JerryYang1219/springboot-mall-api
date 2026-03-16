@@ -71,9 +71,12 @@ public class ProductDaoImpl implements ProductDao {
                 "price = :price, stock = :stock, description = :description, last_modified_date = :last_modified_date" +
                 " WHERE product_id = :product_id";
 
+        // 將 productId 映射至 SQL 具名參數 :product_id
         Map<String, Object> map = new HashMap<>();
         map.put("product_id", productId);
 
+        // 將 ProductRequest 中的資料映射至 SQL 具名參數
+        // 將前端傳入的 DTO 欄位逐一填入 Map，Key 值必須與 SQL 裡的 :name 完全一致
         map.put("product_name", productRequest.getProductName());
         map.put("category", productRequest.getCategory().toString());
         map.put("image_url", productRequest.getImageUrl());
@@ -81,8 +84,22 @@ public class ProductDaoImpl implements ProductDao {
         map.put("stock", productRequest.getStock());
         map.put("description", productRequest.getDescription());
 
+        //更新 新的修改時間
         map.put("last_modified_date", new Date());
 
+        // 傳入 SQL 與參數映射表，執行資料庫修改
+        namedParameterJdbcTemplate.update(sql, map);
+    }
+
+    @Override
+    public void deleteProductById(Integer productId) {
+        String sql = "DELETE FROM product WHERE product_id = :product_id";
+
+        // 將 productId 映射至 SQL 具名參數 :product_id
+        Map<String, Object> map = new HashMap<>();
+        map.put("product_id", productId);
+
+        // 傳入 SQL 與參數映射表，執行資料庫的刪除動作
         namedParameterJdbcTemplate.update(sql, map);
     }
 }

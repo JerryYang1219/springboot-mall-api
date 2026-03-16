@@ -11,4 +11,6 @@ public interface ProductService {
 
     //沒有返回值
     void updateProduct(Integer productId, ProductRequest productRequest);
+
+    void deleteProductById(Integer productId);
 }

@@ -59,4 +59,12 @@ public class ProductController {
         //商品修改成功、且商品修改過後的值為多少
         return ResponseEntity.status(HttpStatus.OK).body(updatedProduct);
     }
+
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer productId){
+        productService.deleteProductById(productId);
+
+        // http status code 是 204 No Content 表示這個數據已經被刪掉了
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
