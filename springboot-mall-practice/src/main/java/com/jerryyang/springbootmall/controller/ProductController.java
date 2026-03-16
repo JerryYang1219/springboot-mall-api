@@ -28,7 +28,7 @@ public class ProductController {
         }
     }
 
-
+    //新增商品功能
     @PostMapping("/products")
     public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductRequest productRequest){
         Integer productId = productService.createProduct(productRequest);
@@ -36,5 +36,27 @@ public class ProductController {
         Product product = productService.getProductById(productId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
+    }
+
+    @PutMapping("/products/{productId}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Integer productId,
+                                                 @RequestBody @Valid ProductRequest productRequest){//接住前端傳過來的參數
+                                                // 前端只能去修改ProductRequest中變數的值
+        //先查詢要更新的商品是否存在
+        Product product = productService.getProductById(productId);
+
+        //回傳給前端說商品不存在
+        if(product == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        //productId要更新的是哪一個商品，ProductRequest表示這個商品修改過後的值是什麼
+        productService.updateProduct(productId, productRequest);
+
+        //取得更新後的商品出來
+        Product updatedProduct = productService.getProductById(productId);
+
+        //商品修改成功、且商品修改過後的值為多少
+        return ResponseEntity.status(HttpStatus.OK).body(updatedProduct);
     }
 }
