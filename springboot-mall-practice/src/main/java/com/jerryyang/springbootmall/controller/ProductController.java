@@ -6,15 +6,18 @@ import com.jerryyang.springbootmall.dto.ProductRequest;
 import com.jerryyang.springbootmall.model.Product;
 import com.jerryyang.springbootmall.service.ProductService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//Controller的bean
-@RestController
+@Validated //有@Max、@Min的註解，需加上才會生效
+@RestController //Controller的bean
 public class ProductController {
 
     @Autowired
@@ -30,7 +33,11 @@ public class ProductController {
 
             //排序 Sorting
             @RequestParam(defaultValue = "created_date") String orderBy, // 設定預設值
-            @RequestParam(defaultValue = "desc") String sort //設定預設值為大->小之排序
+            @RequestParam(defaultValue = "desc") String sort, //設定預設值為大->小之排序
+
+            // 分頁 Pagination
+            @RequestParam(defaultValue = "5") @Max(1000) @Min(0) Integer limit, //預設取出5筆、限制0-1000筆
+            @RequestParam(defaultValue = "0") @Min(0) Integer offset //預設不跳過任何1筆數據
     ){
         //將參數統整至ProductQueryParams做管理
         ProductQueryParams productQueryParams = new ProductQueryParams();
@@ -38,6 +45,8 @@ public class ProductController {
         productQueryParams.setSearch(search);
         productQueryParams.setOrderBy(orderBy);
         productQueryParams.setSort(sort);
+        productQueryParams.setLimit(limit);
+        productQueryParams.setOffset(offset);
 
         List<Product> productList = productService.getProducts(productQueryParams);
 

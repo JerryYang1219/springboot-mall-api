@@ -1,6 +1,5 @@
 package com.jerryyang.springbootmall.dao.impl;
 
-import com.jerryyang.springbootmall.constant.ProductCategory;
 import com.jerryyang.springbootmall.dao.ProductDao;
 import com.jerryyang.springbootmall.dto.ProductQueryParams;
 import com.jerryyang.springbootmall.dto.ProductRequest;
@@ -41,8 +40,13 @@ public class ProductDaoImpl implements ProductDao {
             map.put("search", "%" + productQueryParams.getSearch() + "%"); //模糊查詢%需要寫在map的值中，寫在sql語法會報錯
         }
 
-        //使用字串拼接方式把sql拼起來。兩個參數有預設值，不需有null判斷式
+        //排序，使用字串拼接方式把sql拼起來。兩個參數有預設值，不需有null判斷式
         sql = sql + " ORDER BY " + productQueryParams.getOrderBy() + " " + productQueryParams.getSort();
+
+        //分頁
+        sql = sql + " LIMIT :limit OFFSET :offset";
+        map.put("limit", productQueryParams.getLimit());
+        map.put("offset", productQueryParams.getOffset());
 
         //使用query()查詢商品數據
         List<Product> productList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
