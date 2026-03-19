@@ -27,16 +27,7 @@ public class ProductDaoImpl implements ProductDao {
         Map<String, Object> map = new HashMap<>();
 
         //查詢條件
-        if(productQueryParams.getCategory() != null){
-            sql = sql + " AND category = :category"; //AND前面必需要有空白
-            map.put("category", productQueryParams.getCategory().name());
-        }
-
-        //篩選出包含這個關鍵字的商品
-        if(productQueryParams.getSearch() != null){
-            sql = sql + " AND product_name LIKE :search";
-            map.put("search", "%" + productQueryParams.getSearch() + "%"); //模糊查詢%需要寫在map的值中，寫在sql語法會報錯
-        }
+        sql = addFilteringSql(sql, map, productQueryParams);
 
         //queryForObject 將count的值轉換成Integer類型
         Integer total = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
@@ -51,18 +42,8 @@ public class ProductDaoImpl implements ProductDao {
 
         Map<String, Object> map = new HashMap<>();
 
-        //在controller中設定category、search為不必填參數，有可能為null，所以需有if判斷式不是null時才拼上sql語法
         //查詢商品分類
-        if(productQueryParams.getCategory() != null){
-            sql = sql + " AND category = :category"; //AND前面必需要有空白
-            map.put("category", productQueryParams.getCategory().name());
-        }
-
-        //篩選出包含這個關鍵字的商品
-        if(productQueryParams.getSearch() != null){
-            sql = sql + " AND product_name LIKE :search";
-            map.put("search", "%" + productQueryParams.getSearch() + "%"); //模糊查詢%需要寫在map的值中，寫在sql語法會報錯
-        }
+        sql = addFilteringSql(sql, map, productQueryParams);
 
         //排序，使用字串拼接方式把sql拼起來。兩個參數有預設值，不需有null判斷式
         sql = sql + " ORDER BY " + productQueryParams.getOrderBy() + " " + productQueryParams.getSort();
@@ -160,5 +141,23 @@ public class ProductDaoImpl implements ProductDao {
 
         // 傳入 SQL 與參數映射表，執行資料庫的刪除動作
         namedParameterJdbcTemplate.update(sql, map);
+    }
+
+    private String addFilteringSql(String sql, Map<String, Object> map, ProductQueryParams productQueryParams){
+
+        //在controller中設定category、search為不必填參數，有可能為null，所以需有if判斷式不是null時才拼上sql語法
+        //查詢商品分類
+        if(productQueryParams.getCategory() != null){
+            sql = sql + " AND category = :category"; //AND前面必需要有空白
+            map.put("category", productQueryParams.getCategory().name());
+        }
+
+        //篩選出包含這個關鍵字的商品
+        if(productQueryParams.getSearch() != null){
+            sql = sql + " AND product_name LIKE :search";
+            map.put("search", "%" + productQueryParams.getSearch() + "%"); //模糊查詢%需要寫在map的值中，寫在sql語法會報錯
+        }
+
+        return sql;
     }
 }
