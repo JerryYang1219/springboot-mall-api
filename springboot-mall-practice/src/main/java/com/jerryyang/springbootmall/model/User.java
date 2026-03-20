@@ -1,11 +1,22 @@
 package com.jerryyang.springbootmall.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
 public class User {
     private Integer userId;
+
+    //當 Spring Boot 將這個 User class 去轉換成是一個 json 格式的時候，
+    //就會將 email 變數的 key 去轉換成是 e_mail
+    @JsonProperty("e_mail")
     private String email;
+
+    //當 Spring Boot 在轉換 User object 為 json 格式的時候就會去忽略這個 password 的變數
+    @JsonIgnore
     private String password;
+
     private Date createDate;
     private Date lastModifiedDate;
 
