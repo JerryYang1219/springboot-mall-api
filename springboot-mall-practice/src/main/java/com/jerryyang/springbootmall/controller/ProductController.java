@@ -80,10 +80,13 @@ public class ProductController {
     //新增商品功能
     @PostMapping("/products")
     public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductRequest productRequest){
+        //創建商品出來並得到資料庫所生成的productId
         Integer productId = productService.createProduct(productRequest);
 
+        //根據productId 查詢這筆商品出來
         Product product = productService.getProductById(productId);
 
+        //將商品數據回傳給前端
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 

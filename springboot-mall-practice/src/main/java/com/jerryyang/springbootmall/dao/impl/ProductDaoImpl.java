@@ -61,14 +61,19 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public Product getProductById(Integer productId) {
+        //定義 SQL 查詢指令，選取所需欄位，並使用 :productId 具名參數來進行過濾
         String sql = "SELECT product_id, product_name, category, image_url, price, stock, description, " +
                 "created_date, last_modified_date FROM product WHERE product_id = :productId";
 
+        //建立 HashMap 容器，將方法參數 productId 存入，以便後續映射至 SQL 中的 :productId
         Map<String, Object> map = new HashMap<>();
         map.put("productId", productId);
 
+        //執行查詢，傳入 SQL、參數 Map，並透過 ProductRowMapper 將資料庫結果轉換成 Java Object
+        //query 方法預設會回傳一個 List 集合
         List<Product> productList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
 
+        //檢查查詢結果，如果集合長度大於 0，代表有找到資料
         if(productList.size() > 0){
             return productList.get(0);
         }else {
@@ -78,27 +83,33 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public Integer createProduct(ProductRequest productRequest) {
+        //定義 SQL 新增指令，使用具名參數來預留欄位位置，防止 SQL Injection
         String sql = "INSERT INTO product(product_name, category, image_url, price, stock, " +
                 "description, created_date, last_modified_date) " +
                 "VALUES (:product_name, :category, :image_url, :price, :stock, :description, " +
                 ":created_date, :last_modified_date)";
-
+        //建立一個 Map 容器，用來將 Java 物件的資料與 SQL 中的具名參數進行映射
         Map<String, Object> map = new HashMap<>();
         map.put("product_name", productRequest.getProductName());
+        //將 Enum 類型轉為字串存入，確保與資料庫的 VARCHAR/TEXT 類型匹配
         map.put("category", productRequest.getCategory().toString());
         map.put("image_url", productRequest.getImageUrl());
         map.put("price", productRequest.getPrice());
         map.put("stock", productRequest.getStock());
         map.put("description", productRequest.getDescription());
 
+        //初始化時間，確保資料的新增時間與最後修改時間同步
         Date now = new Date();
         map.put("created_date", now);
         map.put("last_modified_date", now);
 
+        //宣告一個 KeyHolder 物件，用來儲存資料庫自動生成的ID
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
+        //執行 SQL 更新動作。使用 MapSqlParameterSource 包裝參數，並傳入 keyHolder 用於接住生成的 ID
         namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
 
+        //從 keyHolder 中取得剛產生的 ID，並轉為 int 型態回傳給 Service 層
         int productId = keyHolder.getKey().intValue();
 
         return productId;

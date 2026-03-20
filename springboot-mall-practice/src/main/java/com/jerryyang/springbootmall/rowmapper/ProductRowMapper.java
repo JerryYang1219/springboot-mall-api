@@ -8,6 +8,10 @@ import org.springframework.lang.Nullable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/*
+  ProductRowMapper 負責將資料庫回傳的 ResultSet 轉換為 Product 實體物件。
+  此類別為 DAO 層專用，確保資料存取邏輯與物件轉換邏輯的分離。
+ */
 public class ProductRowMapper implements RowMapper<Product> {
     @Nullable
     @Override
