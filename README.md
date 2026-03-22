@@ -1,10 +1,10 @@
 ## SpringBoot-Mall-API
-這是一個基於 Spring Boot 3 構建的電商後端系統。本專案實作了從商品功能、帳號功能、訂單功能。
+這是一個基於 Spring Boot 3 構建的電商後端 RESTful API 系統。完整實作了商品管理、會員認證與訂單處理等核心商務邏輯。
 
 ---
 
 ## 技術棧 
-* **Framework:** Java 17, Spring Boot 3
+* **Framework:** Java 17, Spring Boot 3 (RESTful API Design)
 * **Database:** MySQL, Spring JDBC
 * **Security:** Password Hashing 
 * **Architecture:** Layered Architecture (Controller, Service, DAO)
@@ -12,9 +12,8 @@
 ---
 
 ## 實作功能 
-
 ### 1. 商品功能 (Product Management)
-* **進階查詢列表：** 實作了 **Filtering (過濾)**、**Sorting (排序)** 與 **Pagination (分頁)**，支援動態 SQL 查詢。
+* **進階查詢列表：** 實作了 **過濾 (Filtering)**、**排序 (Sorting)** 與 **分頁 (Pagination)**，支援動態 SQL 查詢。
 * **完整 CRUD：** 提供商品的新增、查詢、修改與刪除 API。
 
 ### 2. 帳號功能 (User Authentication)
@@ -23,7 +22,7 @@
 
 ### 3. 訂單功能 (Order System)
 * **創建訂單：** 整合 `@Transactional` 事務管理。
-* **查詢訂單列表：**
+* **查詢訂單列表：** 實作動態 SQL 篩選與分頁查詢 (Pagination)。
 
 ---
 
