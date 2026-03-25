@@ -28,8 +28,6 @@
 
 ## API Examples
 
----
-
 ### 1. User Login
 
 **POST** `/users/login`
