@@ -26,6 +26,49 @@
 
 ---
 
+erDiagram
+    USER ||--o{ ORDER : "下單 (places)"
+    ORDER ||--|{ ORDER_ITEM : "包含 (contains)"
+    PRODUCT ||--o{ ORDER_ITEM : "被訂購 (is ordered)"
+
+    USER {
+        int user_id PK
+        string email UK "唯一值"
+        string password
+        timestamp created_date
+        timestamp last_modified_date
+    }
+
+    PRODUCT {
+        int product_id PK
+        string product_name
+        string category
+        string image_url
+        int price
+        int stock
+        string description
+        timestamp created_date
+        timestamp last_modified_date
+    }
+
+    ORDER {
+        int order_id PK
+        int user_id FK "關聯至 USER"
+        int total_amount "總計金額"
+        timestamp created_date
+        timestamp last_modified_date
+    }
+
+    ORDER_ITEM {
+        int order_item_id PK
+        int order_id FK "關聯至 ORDER"
+        int product_id FK "關聯至 PRODUCT"
+        int quantity "數量"
+        int amount "小計"
+    }
+
+---
+
 ## API Examples
 
 ### 1. User Login
